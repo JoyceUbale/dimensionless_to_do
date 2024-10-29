@@ -1,43 +1,56 @@
+@import url('https://fonts.googleapis.com/css2?family=Kumbh+Sans:wght@100..900&family=Oxanium:wght@200..800&display=swap');
+*{
+  margin: 0px;
+  padding: 0px;
+}
 /* General App Styling */
 body {
   font-family: Arial, sans-serif;
-  background-color: #f0f2f5; /* Light grey background */
-  margin: 0;
-  padding: 0;
+  background-color: #f0f2f5;
+  /* margin: 0;
+  padding: 0; */
   display: flex;
   justify-content: center;
-  align-items: center;
-  height: 100vh;
+  /* align-items: center; */
+  margin-top: 30px;
+  /* height: 100vh; */
   color: #333;
 }
-
-/* App Container */
 .App {
-  background-color: #fff;
-  width: 90%;
+  background-color: #c1a6b6;
+  width: 500px;
   max-width: 500px;
   box-shadow: 0px 4px 8px rgba(0, 0, 0, 0.1);
   border-radius: 10px;
   padding: 20px;
-  margin: 0 auto;
+  padding-top: 40px;
+  margin-bottom: 30px;
+  /* padding-bottom: 30px; */
   box-sizing: border-box;
   text-align: center;
+  overflow: auto;
 }
 
-/* Title */
-h1 {
-  font-size: 24px;
-  color: #4a90e2;
-  margin-bottom: 20px;
+.h1t {
+  font-size: 45px;
+  color: #6502bb;
+  margin-bottom: 35px;
+  font-family: "Oxanium", sans-serif;
+  font-weight: 800;
+  /* text-align: center; */
+}
+h2{
+  color: #6502bb;
+  font-family: "Oxanium", sans-serif;
+  margin-bottom: 10px;
+  margin-top: 10px;
 }
 
-/* TodoForm Styling */
 form {
   display: flex;
   justify-content: space-between;
   margin-bottom: 20px;
 }
-
 input[type="text"] {
   flex: 1;
   padding: 10px;
@@ -57,12 +70,10 @@ button[type="submit"] {
   cursor: pointer;
   font-size: 16px;
 }
-
 button[type="submit"]:hover {
   background-color: #357ab7;
 }
 
-/* TodoList and TodoItem Styling */
 ul {
   list-style-type: none;
   padding: 0;
@@ -76,11 +87,10 @@ li {
   margin-bottom: 10px;
   border-radius: 5px;
   display: flex;
-  justify-content: space-between;
-  align-items: center;
+  flex-direction: column; /* Stack task and buttons vertically */
   transition: background-color 0.3s;
+  word-wrap: break-word; /* Ensures long text wraps */
 }
-
 li:hover {
   background-color: #f1f1f1;
 }
@@ -90,9 +100,18 @@ li.completed {
   color: #888;
 }
 
-/* Buttons inside TodoItem */
+.task-text {
+  flex: 1;
+  word-wrap: break-word;
+  white-space: normal;
+  margin-bottom: 8px; /* Space between task text and buttons */
+}
+.button-group {
+  display: flex;
+  justify-content: space-between; /* Evenly space buttons */
+}
+
 button {
-  margin-left: 5px;
   padding: 5px 8px;
   border: none;
   border-radius: 3px;
@@ -100,17 +119,16 @@ button {
   cursor: pointer;
 }
 
-button:first-of-type {
+button.complete {
   background-color: #4CAF50;
   color: white;
 }
 
-button:nth-of-type(2) {
+button.edit {
   background-color: #FF9800;
   color: white;
 }
-
-button:nth-of-type(3) {
+button.delete {
   background-color: #F44336;
   color: white;
 }
@@ -119,7 +137,6 @@ button:hover {
   opacity: 0.85;
 }
 
-/* Delete All Button Styling */
 button.delete-all {
   padding: 8px 16px;
   margin-top: 20px;
@@ -130,7 +147,59 @@ button.delete-all {
   cursor: pointer;
   font-size: 16px;
 }
-
 button.delete-all:hover {
   background-color: #d32f2f;
+}
+
+button img {
+  width: 24px;
+  height: 24px;
+  cursor: pointer;
+}
+
+input[type="date"] {
+  padding: 8px;
+  border-radius: 5px;
+  border: 1px solid #ddd;
+  font-size: 16px;
+  margin-left: 5px;
+}
+:root {
+  --background-color-light: #ffffff;
+  --text-color-light: #333333;
+  --background-color-dark: #c1a6b6;
+  --text-color-dark: #040303;
+}
+
+body.light-mode {
+  background-color: var(--background-color-light);
+  color: var(--text-color-light);
+}
+
+body.dark-mode {
+  background-color: var(--background-color-dark);
+  color: var(--text-color-dark);
+}
+
+.App {
+  transition: background-color 0.3s, color 0.3s;
+}
+body.dark-mode {
+  background-color: var(--background-color-dark);
+  color: var(--text-color-dark);
+}
+
+/* Dark mode App background adjustment */
+body.dark-mode .App {
+  background-color: var(--background-color-light); /* Changes .App background to white in dark mode */
+}
+.toggle-theme-btn {
+  position: absolute;
+  /* top: 20px;
+  right: 20px; */
+  margin-top: -35px;
+  margin-left: 210px;
+  background: none;
+  border: none;
+  cursor: pointer;
 }
