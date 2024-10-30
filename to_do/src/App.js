@@ -4,7 +4,7 @@ import TodoForm from './Components/TodoForm';
 import TodoList from './Components/TodoList';
 import nightModeIcon from '../src/assets/night-mode.png';
 import sunIcon from '../src/assets/sun.png';
-import "../src/App.css";
+import "../src/App.css"; // Ensure this line is present
 
 const App = () => {
     // State to store list of todos fetched from API
