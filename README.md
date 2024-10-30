@@ -10,7 +10,7 @@ The Todo Application is an intuitive and dynamic task management tool developed 
 - **Edit Todo Tasks**: Users can edit existing tasks, including changing the task description and due date.
 - **Delete Todo Tasks**: Users can delete individual tasks or clear all tasks from their list.
 - **Toggle Task Completion**: Users can mark tasks as completed, visually indicating the task status.
-- **Recommended Tasks**: Fetches and displays a set of recommended tasks from an external API.
+- **Recommended Tasks**: Fetches and displays a set of recommended tasks from an external API.The tasks keep changing on reloading the website.
 - **Filter Tasks**: Users can filter tasks based on their completion status (All, Completed, Pending).
 - **Dark/Light Mode**: Users can switch between dark mode and light mode for better visibility and preference.
 - **Responsive Design**: The application is designed to be user-friendly on various screen sizes.
