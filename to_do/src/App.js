@@ -15,14 +15,14 @@ const App = () => {
     const [editTask, setEditTask] = useState(null);
     // State to manage theme (dark/light mode)
     const [darkMode, setDarkMode] = useState(false);
+    // State to manage the current filter (all, pending, completed)
+    const [filter, setFilter] = useState('all');
 
-    // Fetch todos on initial render, and update theme when darkMode state changes
     useEffect(() => {
         fetchTodos();
         document.body.className = darkMode ? 'dark-mode' : 'light-mode';
     }, [darkMode]);
 
-    // Function to fetch todos from an API
     const fetchTodos = async () => {
         try {
             const response = await axios.get('https://dummyjson.com/todos');
@@ -38,14 +38,12 @@ const App = () => {
         }
     };
 
-    // Add a new todo to userTodos, sorted by due date
     const addTodo = (newTodo) => {
         setUserTodos(prev => 
             [newTodo, ...prev].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate))
         );
     };
 
-    // Update an existing user todo
     const updateTodo = (id, newTask, newDueDate) => {
         setUserTodos(prev =>
             prev.map(todo =>
@@ -54,7 +52,6 @@ const App = () => {
         );
     };
 
-    // Update a recommended todo item
     const updateRecommendedTodo = (id, newTask, newDueDate) => {
         setTodos(prevTodos =>
             prevTodos.map(todo =>
@@ -63,29 +60,46 @@ const App = () => {
         );
     };
 
-    // Toggle theme between dark and light mode
     const toggleTheme = () => {
         setDarkMode(prevMode => !prevMode);
     };
 
+    // Function to filter todos based on the current filter
+    const filteredUserTodos = userTodos.filter(todo => {
+        if (filter === 'completed') return todo.completed;
+        if (filter === 'pending') return !todo.completed;
+        return true; // for 'all'
+    });
+
+    const filteredRecommendedTodos = todos.filter(todo => {
+        if (filter === 'completed') return todo.completed;
+        if (filter === 'pending') return !todo.completed;
+        return true; // for 'all'
+    });
+
     return (
         <div className="App">
-            {/* Toggle theme button with icons */}
             <button className="toggle-theme-btn" onClick={toggleTheme}>
                 <img src={darkMode ? sunIcon : nightModeIcon} alt="Toggle Theme" style={{ width: '24px', height: '24px' }} />
             </button>
             <div className='h1t'>Tick Karo</div>
 
-            {/* Todo form to add or edit tasks */}
             <TodoForm 
                 addTodo={addTodo} 
                 editTask={editTask} 
                 updateTodo={updateTodo} 
             />
 
+            {/* Filter Buttons */}
+            <div style={{ marginBottom: '20px' }}>
+                <button className="filter-button" onClick={() => setFilter('all')}>All</button>
+                <button className="filter-button" onClick={() => setFilter('pending')}>Pending</button>
+                <button className="filter-button" onClick={() => setFilter('completed')}>Completed</button>
+            </div>
+
             <h2>Your Tasks</h2>
             <TodoList 
-                todos={userTodos} 
+                todos={filteredUserTodos} 
                 editTodo={(id) => setEditTask(userTodos.find(todo => todo.id === id))}
                 deleteTodo={(id) => setUserTodos(prev => prev.filter(todo => todo.id !== id))}
                 toggleComplete={(id) => setUserTodos(prev => 
@@ -98,7 +112,7 @@ const App = () => {
 
             <h2>Recommended</h2>
             <TodoList 
-                todos={todos} 
+                todos={filteredRecommendedTodos}  // Apply the filter to recommended todos as well
                 editTodo={(id) => {
                     const taskToEdit = todos.find(todo => todo.id === id);
                     if (taskToEdit) {
@@ -114,7 +128,6 @@ const App = () => {
                 )}
             />
 
-            {/* Button to delete all user tasks */}
             <button onClick={() => setUserTodos([])}>Delete All Your Tasks</button>
         </div>
     );

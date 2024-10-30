@@ -213,3 +213,17 @@ body.dark-mode .App {
   border: none;
   cursor: pointer;
 }
+.filter-button {
+  padding: 10px 15px;
+  margin: 0 5px;
+  border: none;
+  background-color: #4a90e2;
+  color: #fff;
+  border-radius: 5px;
+  cursor: pointer;
+  font-size: 16px;
+}
+
+.filter-button:hover {
+  background-color: #357ab7;
+}
