@@ -1,103 +1,103 @@
 import React, { useEffect, useState } from 'react';
 import axios from 'axios';
 import TodoForm from './Components/TodoForm';
-import TodoList from './Components/TodoList';
+import TodoList from'./Components/TodoList';
+import nightModeIcon from '../src/assets/night-mode.png';
+import sunIcon from '../src/assets/sun.png';
 import "../src/App.css";
 
 const App = () => {
-    const [todos, setTodos] = useState([]);       // For recommended tasks from the API
-    const [userTodos, setUserTodos] = useState([]); // For tasks added by the user
+    const [todos, setTodos] = useState([]);
+    const [userTodos, setUserTodos] = useState([]);
+    const [editTask, setEditTask] = useState(null);
+    const [darkMode, setDarkMode] = useState(false);
 
-    // Fetch mock data from the dummy API and select 5 random todos
+    useEffect(() => {
+        fetchTodos();
+        document.body.className = darkMode ? 'dark-mode' : 'light-mode';
+    }, [darkMode]);
+
     const fetchTodos = async () => {
         try {
             const response = await axios.get('https://dummyjson.com/todos');
-            console.log("Fetched todos data:", response.data.todos);
-
-            // Shuffle and select 5 random todos from the API response
-            const shuffledTodos = response.data.todos.sort(() => 0.5 - Math.random());
-            const randomTodos = shuffledTodos.slice(0, 5).map(todo => ({
+            const randomTodos = response.data.todos.slice(0, 5).map(todo => ({
                 id: todo.id,
                 task: todo.todo,
-                completed: todo.completed
+                completed: todo.completed,
+                dueDate: ''
             }));
-
             setTodos(randomTodos);
         } catch (error) {
             console.error("Error fetching todos:", error);
         }
     };
 
-    useEffect(() => {
-        fetchTodos();
-    }, []);
-
     const addTodo = (newTodo) => {
-        // Add the new task to userTodos
-        setUserTodos([newTodo, ...userTodos]);
+        setUserTodos(prev => [newTodo, ...prev].sort((a, b) => new Date(a.dueDate) - new Date(b.dueDate)));
     };
 
-    const editTodo = (id, isUserTask = false) => {
-        const updatedTask = prompt('Edit your task:');
-        if (updatedTask) {
-            if (isUserTask) {
-                setUserTodos(userTodos.map(todo => 
-                    todo.id === id ? { ...todo, task: updatedTask } : todo
-                ));
-            } else {
-                setTodos(todos.map(todo => 
-                    todo.id === id ? { ...todo, task: updatedTask } : todo
-                ));
-            }
-        }
+    // Example updateTodo function in App.js
+    const updateTodo = (id, newTask, newDueDate) => {
+        setUserTodos(prev =>
+            prev.map(todo =>
+                todo.id === id ? { ...todo, task: newTask, dueDate: newDueDate } : todo
+            )
+        );
+    };
+    
+
+    const updateRecommendedTodo = (id, newTask, newDueDate) => {
+        setTodos(prevTodos =>
+            prevTodos.map(todo =>
+                todo.id === id ? { ...todo, task: newTask, dueDate: newDueDate } : todo
+            )
+        );
     };
 
-    const deleteTodo = (id, isUserTask = false) => {
-        if (isUserTask) {
-            setUserTodos(userTodos.filter(todo => todo.id !== id));
-        } else {
-            setTodos(todos.filter(todo => todo.id !== id));
-        }
-    };
-
-    const deleteAllTodos = () => {
-        setUserTodos([]);
-    };
-
-    const toggleComplete = (id, isUserTask = false) => {
-        if (isUserTask) {
-            setUserTodos(userTodos.map(todo =>
-                todo.id === id ? { ...todo, completed: !todo.completed } : todo
-            ));
-        } else {
-            setTodos(todos.map(todo =>
-                todo.id === id ? { ...todo, completed: !todo.completed } : todo
-            ));
-        }
+    const toggleTheme = () => {
+        setDarkMode(prevMode => !prevMode);
     };
 
     return (
         <div className="App">
-            <h1>To-Do Reminder</h1>
-            <TodoForm addTodo={addTodo} />
-
+            <button className="toggle-theme-btn" onClick={toggleTheme}>
+                <img src={darkMode ? sunIcon : nightModeIcon} alt="Toggle Theme" style={{ width: '24px', height: '24px' }} />
+            </button>
+            <div className='h1t'>Tick Karo</div>
+            <TodoForm 
+                addTodo={addTodo} 
+                editTask={editTask} 
+                updateTodo={updateTodo} 
+            />
             <h2>Your Tasks</h2>
             <TodoList 
-                todos={userTodos} 
-                editTodo={(id) => editTodo(id, true)} 
-                deleteTodo={(id) => deleteTodo(id, true)} 
-                toggleComplete={(id) => toggleComplete(id, true)} 
-            />
+    todos={userTodos} 
+    editTodo={(id) => setEditTask(userTodos.find(todo => todo.id === id))}
+    deleteTodo={(id) => setUserTodos(prev => prev.filter(todo => todo.id !== id))}
+    toggleComplete={(id) => setUserTodos(prev => prev.map(todo =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ))}
+    updateTodo={updateTodo} // Make sure this line is present
+/>
 
             <h2>Recommended</h2>
             <TodoList 
-                todos={todos} 
-                editTodo={editTodo} 
-                deleteTodo={deleteTodo} 
-                toggleComplete={toggleComplete} 
-            />
-            
-            <button onClick={deleteAllTodos}>Delete All Your Tasks</button>
+    todos={todos} 
+    editTodo={(id) => {
+        const taskToEdit = todos.find(todo => todo.id === id);
+        if (taskToEdit) {
+            setEditTask(taskToEdit);
+        }
+    }}
+    updateTodo={updateRecommendedTodo} // Use updateRecommendedTodo here
+    deleteTodo={(id) => setTodos(prev => prev.filter(todo => todo.id !== id))}
+    toggleComplete={(id) => setTodos(prev => prev.map(todo =>
+        todo.id === id ? { ...todo, completed: !todo.completed } : todo
+    ))}
+/>
+
+
+            <button onClick={() => setUserTodos([])}>Delete All Your Tasks</button>
         </div>
     );
 };
